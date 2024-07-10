@@ -3,7 +3,7 @@
 import requests
 from apscheduler.schedulers.background import BlockingScheduler
 import smtplib
-from env import
+from dotenv import load_dotenv
 from win10toast import ToastNotifier
 import sys
 import os
@@ -13,6 +13,7 @@ from pywebcopy import save_webpage
 
 #Config file needed for projectFolder, and destination email address
 
+load_dotenv()
 toaster = ToastNotifier()
 
 if os.path.isfile("inputs.json"):
@@ -42,7 +43,7 @@ def necScrape():
     #Send email
 
 
-def apsScheduler():
+def apsScheduler(): 
     scheduler = BlockingScheduler
     necSearch_1 = scheduler.add_job(necScrape)
 
