@@ -14,6 +14,7 @@ from pywebcopy import save_webpage
 #Config file needed for projectFolder, and destination email address
 
 load_dotenv()
+
 toaster = ToastNotifier()
 
 if os.path.isfile("inputs.json"):
