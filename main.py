@@ -1,0 +1,1 @@
+#Intermittently checks the website of the National Exhibition Centre in Birmingham for events relating to my interests
