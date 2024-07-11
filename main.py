@@ -9,7 +9,6 @@ import sys
 import os
 import json
 from bs4 import BeautifulSoup
-from pywebcopy import save_webpage
 
 #Config file needed for projectFolder, and destination email address
 
@@ -36,16 +35,8 @@ if os.path.isfile("inputs.json"):
             print(f"{e}")
 
 def necScrape():
-    savepage = save_webpage 
-    savepage(url="https://www.thenec.co.uk/whats-on/",
-             project_folder=project_Folder,
-             project_name="NEC",
-             bypass_robots=False, #respectful fr fr
-             debug=True,
-             open_in_browser=False,
-             delay=None,
-             threaded=False,
-             )
+    pass
+ 
     #class
     #aria-label
     #href=
@@ -54,6 +45,8 @@ def necScrape():
     #If new download differs, access the new pages. 
     #Parse for key words.
     #Send email
+
+necScrape()
 
 
 def apsScheduler(): 
@@ -86,5 +79,5 @@ def emailClient(emailAddress, bodyOfText):
         #terminalOutput = sys.stdout
         #with open ("output.txt", "w") as debugFile:
 
-emailClient(emailAddress, bodyOfText)
+#emailClient(emailAddress, bodyOfText)
 
