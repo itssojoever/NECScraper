@@ -26,13 +26,14 @@ if os.path.isfile("inputs.json"):
     print ("Configuration found")
     with open("inputs.json", "r") as f:
         try:
-            data = json.load()
+            data = json.load(f)
             emailAddress = data.get("email_address")
             project_Folder = data.get("project_folder")
-            
+            print (f"Target email address is {emailAddress}")
+            print (f"The folder within which to store web pages is {project_Folder}")
 
-        except:
-            pass
+        except Exception as e:
+            print(f"{e}")
 
 def necScrape():
     savepage = save_webpage 
@@ -59,8 +60,10 @@ def apsScheduler():
     scheduler = BlockingScheduler
     necSearch_1 = scheduler.add_job(necScrape)
 
+bodyOfText = "placeholder"
 
-def emailClient(emailaddress, bodyOfText):
+
+def emailClient(emailAddress, bodyOfText):
     print ("New suitable event found, trying to send email")
     try:
         with smtplib.SMTP (smtpInfoS, smtpInfoP) as conn:
@@ -82,4 +85,6 @@ def emailClient(emailaddress, bodyOfText):
         print ("Failed to send email. Debug file created")
         #terminalOutput = sys.stdout
         #with open ("output.txt", "w") as debugFile:
+
+emailClient(emailAddress, bodyOfText)
 
