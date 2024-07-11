@@ -15,6 +15,11 @@ from pywebcopy import save_webpage
 
 load_dotenv()
 
+smtpInfoS = os.getenv("smtpInfoS")
+smtpInfoP = os.getenv("smtpInfoP")
+smtpInfoE = os.getenv("smtpInfoE")
+smtpInfoK = os.getenv("smtpInfoK")
+
 toaster = ToastNotifier()
 
 if os.path.isfile("inputs.json"):
@@ -22,11 +27,17 @@ if os.path.isfile("inputs.json"):
     with open("inputs.json", "r") as f:
         try:
             data = json.load()
+            emailAddress = data.get("email_address")
+            project_Folder = data.get("project_folder")
+            
+
+        except:
+            pass
 
 def necScrape():
     savepage = save_webpage 
     savepage(url="https://www.thenec.co.uk/whats-on/",
-             project_folder=projectFolder,
+             project_folder=project_Folder,
              project_name="NEC",
              bypass_robots=False, #respectful fr fr
              debug=True,
@@ -59,7 +70,7 @@ def emailClient(emailaddress, bodyOfText):
 
             conn.login(smtpInfoE, smtpInfoK)
 
-            conn.sendmail(smtpInfoE, emailaddress, bodyOfText)
+            conn.sendmail(smtpInfoE, emailAddress, bodyOfText)
 
             conn.quit()
 
