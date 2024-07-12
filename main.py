@@ -17,12 +17,12 @@ headers = {
 
 #Config file needed for projectFolder, and destination email address
 
-load_dotenv()
+load_dotenv() #load environment variables from .env
 
-smtpInfoS = os.getenv("smtpInfoS")
-smtpInfoP = os.getenv("smtpInfoP")
-smtpInfoE = os.getenv("smtpInfoE")
-smtpInfoK = os.getenv("smtpInfoK")
+smtpInfoS = os.getenv("smtpInfoS") #SMTP server
+smtpInfoP = os.getenv("smtpInfoP") #port
+smtpInfoE = os.getenv("smtpInfoE") #sender email
+smtpInfoK = os.getenv("smtpInfoK") #gmail key
 
 toaster = ToastNotifier()
 
@@ -41,6 +41,9 @@ if os.path.isfile("inputs.json"):
 
 def emailClient(emailAddress, bodyOfText):
     print ("New suitable event(s) found, trying to send email")
+    header = "Keywords found in NEC events"
+    body = bodyOfText
+    emailMessage = f"Subject: {header}\n\n{body}"
     try:
         with smtplib.SMTP (smtpInfoS, smtpInfoP) as conn:
             conn.ehlo()
@@ -49,7 +52,7 @@ def emailClient(emailAddress, bodyOfText):
 
             conn.login(smtpInfoE, smtpInfoK)
 
-            conn.sendmail(smtpInfoE, emailAddress, bodyOfText)
+            conn.sendmail(smtpInfoE, emailAddress, emailMessage)
 
             conn.quit()
 
@@ -130,6 +133,8 @@ def necScrape():
         
     
     bodyOfText = json.dumps(found_URLs)
+    with open ("bodyOfText.txt", "w") as f:
+        f.write(bodyOfText)
 
     emailClient(emailAddress, bodyOfText)
 
