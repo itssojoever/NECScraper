@@ -11,6 +11,10 @@ import json
 from bs4 import BeautifulSoup
 import time
 
+headers = {
+    "User-Agent": "NECEventsFinder/1.0 (+https://www.joefisher.uk/)"
+}
+
 #Config file needed for projectFolder, and destination email address
 
 load_dotenv()
@@ -126,7 +130,7 @@ def necScrape():
         
     
     bodyOfText = json.dumps(found_URLs)
-    
+
     emailClient(emailAddress, bodyOfText)
 
 necScrape()
