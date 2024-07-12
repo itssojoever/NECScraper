@@ -32,9 +32,9 @@ if os.path.isfile("inputs.json"):
         try:
             data = json.load(f)
             emailAddress = data.get("email_address")
-            project_Folder = data.get("project_folder")
-            print (f"Target email address is {emailAddress}")
-            print (f"The folder within which to store web pages is {project_Folder}")
+            #project_Folder = data.get("project_folder")
+            print (f"Recipient email address is {emailAddress}")
+            #print (f"The folder within which to store web pages is {project_Folder}")
 
         except Exception as e:
             print(f"{e}")
