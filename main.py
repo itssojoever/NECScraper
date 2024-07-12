@@ -1,14 +1,15 @@
 #Intermittently checks the website of the National Exhibition Centre in Birmingham for events relating to my interests
 
 import requests
-from apscheduler.schedulers.background import BlockingScheduler
+#from apscheduler.schedulers.background import BlockingScheduler
 import smtplib
 from dotenv import load_dotenv
 from win10toast import ToastNotifier
-import sys
+#import sys
 import os
 import json
 from bs4 import BeautifulSoup
+import time
 
 #Config file needed for projectFolder, and destination email address
 
@@ -34,30 +35,8 @@ if os.path.isfile("inputs.json"):
         except Exception as e:
             print(f"{e}")
 
-def necScrape():
-    pass
- 
-    #class
-    #aria-label
-    #href=
-    #Download website daily
-    #compare new download one with old download. 
-    #If new download differs, access the new pages. 
-    #Parse for key words.
-    #Send email
-
-necScrape()
-
-
-def apsScheduler(): 
-    scheduler = BlockingScheduler
-    necSearch_1 = scheduler.add_job(necScrape)
-
-bodyOfText = "placeholder"
-
-
 def emailClient(emailAddress, bodyOfText):
-    print ("New suitable event found, trying to send email")
+    print ("New suitable event(s) found, trying to send email")
     try:
         with smtplib.SMTP (smtpInfoS, smtpInfoP) as conn:
             conn.ehlo()
@@ -74,10 +53,89 @@ def emailClient(emailAddress, bodyOfText):
 
             toaster.show_toast("Email sent", "A new suitable event at the NEC has been organised. Please see email", duration=7)
 
-    except:
-        print ("Failed to send email. Debug file created")
-        #terminalOutput = sys.stdout
-        #with open ("output.txt", "w") as debugFile:
+    except Exception as e:
+        print (f"Error: {e}")
+
+def necScrape():
+    url_list = [] #Store all event URLs
+
+    found_URLs = {} #Store all URLs with text matching one or more of the keywords
+
+    url = "https://www.thenec.co.uk/whats-on/"
+
+    keywordsDesired = ["tech",
+                        "politics",
+                        "technology",
+                        "artificial intelligence",
+                        "computers",
+                        "computer",
+                        "political",
+                        "engineering",
+                        "engineers",
+                        "software",
+                        "future",
+                        "developers",
+                        "developer",
+                        ]
+    
+    print(f"Designated keywords: {keywordsDesired}")
+    
+    response = requests.get(url)
+    print(f"response: {response}")
+    
+    soup = BeautifulSoup(response.content, "html.parser")
+    targetLine = soup.find("input", {"id": "WhatsonItemsJson"})
+    if targetLine:
+        json_Data = targetLine.get("value")
+
+        try:
+            JSON = json.loads(json_Data)
+            #print(JSON)
+
+            for item in JSON:
+                if "Url" in item:
+                    url_list.append(item["Url"])
+            print (f"Discovered {len(url_list)} links")
+            print ("including:")
+            for url in url_list:
+                print(url)
+
+            confirmSearch = input(f"Do you wish to scan all {len(url_list)} links for designated keywords?. Enter y for yes: ")
+            if confirmSearch.lower() == "y":
+                for url in url_list:
+                    print (f"Checking URL: {url}")
+                    response = requests.get(f"https://www.thenec.co.uk{url}")
+                    if response.ok:
+                        soup = BeautifulSoup(response.content, "html.parser")
+                        time.sleep(2) #Etiquette: spread out requests
+                        pageText = soup.get_text().lower()
+                        locatedKeywords = [keyword for keyword in keywordsDesired if keyword.lower() in pageText]
+                        if locatedKeywords:
+                            print('\x1b[6;30;42m' + f"Keyword(s) found in {url}: {locatedKeywords}" + '\x1b[0m')
+                            found_URLs[url] = locatedKeywords
+                            #found_URLs.append(f"https://www.thenec.co.uk{url}")
+
+                        else:
+                            print(f"No keyword(s) found in {url}")
+                    else:
+                        print(f"Error. Status code: {response.status_code}")
+            else:
+                print ("Search cancelled")
+        except Exception as e:
+            print (f"Exception: {e}")
+        
+    
+    bodyOfText = json.dumps(found_URLs)
+    
+    emailClient(emailAddress, bodyOfText)
+
+necScrape()
+
+
+#def apsScheduler(): 
+#    scheduler = BlockingScheduler
+#    necSearch_1 = scheduler.add_job(necScrape)
+
 
 #emailClient(emailAddress, bodyOfText)
 
