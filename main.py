@@ -130,9 +130,12 @@ def necScrape():
                 print ("Search cancelled")
         except Exception as e:
             print (f"Exception: {e}")
+    
+    else:
+        print ("Error")
         
     
-    bodyOfText = json.dumps(found_URLs)
+    bodyOfText = json.dumps(found_URLs, indent=4, sort_keys=True)
     with open ("bodyOfText.txt", "w") as f:
         f.write(bodyOfText)
 
