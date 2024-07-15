@@ -58,7 +58,7 @@ def emailClient(emailAddress, bodyOfText):
 
             print ("Email sent")
 
-            toaster.show_toast("Email sent", "A new suitable event at the NEC has been organised. Please see email", duration=7)
+            toaster.show_toast("Email sent", "Events with configured keywords found at the NEC. Please see email", duration=7)
 
     except Exception as e:
         print (f"Error: {e}")
@@ -134,12 +134,12 @@ def necScrape():
     else:
         print ("Error")
         
-    
-    bodyOfText = json.dumps(found_URLs, indent=4, sort_keys=True)
-    with open ("bodyOfText.txt", "w") as f:
-        f.write(bodyOfText)
+    if confirmSearch.lower() == "y":
+        bodyOfText = json.dumps(found_URLs, indent=4, sort_keys=True)
+        with open ("bodyOfText.txt", "w") as f:
+            f.write(bodyOfText)
 
-    emailClient(emailAddress, bodyOfText)
+        emailClient(emailAddress, bodyOfText)
 
 necScrape()
 
