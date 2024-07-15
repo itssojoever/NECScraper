@@ -1,9 +1,12 @@
 #Intermittently checks the website of the National Exhibition Centre in Birmingham for events relating to my interests
 
+#standard library
 import os
 import time
 import json
 import smtplib
+
+#third-party libraries
 import requests
 
 from dotenv import load_dotenv
@@ -24,7 +27,7 @@ smtpInfoP = os.getenv("smtpInfoP") #port
 smtpInfoE = os.getenv("smtpInfoE") #sender email
 smtpInfoK = os.getenv("smtpInfoK") #gmail key
 
-keywordsDesired = ["tech",
+keywordsDesired =   ["tech",
                     "politics",
                      "technology",
                      "artificial intelligence",
@@ -38,8 +41,6 @@ keywordsDesired = ["tech",
                      "developers",
                      "developer",
                      ]
-
-
 
 if os.path.isfile("inputs.json"):
     print ("Configuration found")

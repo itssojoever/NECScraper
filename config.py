@@ -1,22 +1,21 @@
-import tkinter #for the GUI
-from tkinter import messagebox #for throwing up messages
-from tkinter import ttk #for prettyifying Tkinter
-from tkinter import filedialog
+#Provides a GUI for configuration of the scraper
+
+#Standard library
 import json
 import os
-import tkinter.filedialog
+
+
+#Third party libraries
+import tkinter
+
+from tkinter import messagebox
+from tkinter import ttk
 
 
 root = tkinter.Tk()
 root.geometry("630x500")
 root.title("NEC checker configuration")
 root.iconname()
-
-def getFolderPath():
-    filePath = filedialog.askdirectory()
-    global filePathConfirmed
-    filePathConfirmed = filePath
-    print(filePathConfirmed)
 
 def loadData():
         if os.path.isfile("inputs.json"):
@@ -36,12 +35,10 @@ def loadData():
 def saveData():
     givenEmail = emailInput.get().upper().strip()
     givenEmail2 = confirmEmailInput.get().upper().strip()
-    projectFolder = filePathConfirmed
     if givenEmail == givenEmail2:
 
         information = {
             "email_address" : givenEmail,
-            "project_folder" : projectFolder
         }
 
         with open("inputs.json", "w") as f:
@@ -66,15 +63,9 @@ emailInput = ttk.Entry(programFrame1, font="helvetica", width=50)
 l2 = ttk.Label(programFrame1, font="helvetica, 12", text="Please confirm email address: ")
 confirmEmailInput = ttk.Entry(programFrame1, font="helvetica, 12", width=50)
 
-l3 = ttk.Label(programFrame1, font="helvetica, 12", text="Select a folder to store data")
-folderButton = ttk.Button(command=getFolderPath)
-
-l4 = ttk.Label(programFrame1, font="helvetica, 12", text="Save settings")
+l3 = ttk.Label(programFrame1, font="helvetica, 12", text="Save settings")
 saveButton = ttk.Button(command=saveData)
 
-
-
-#Need a folder selection window
 
 #Layout>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -86,9 +77,6 @@ confirmEmailInput.grid(row=1, column=1, padx=10, pady=10)
 l2.grid(row=1,column=0, padx=15)
 
 l3.grid(row=2, column=0, padx=15)
-folderButton.grid(row=2, column=1, padx=15)
-
-l4.grid(row=3, column=0, padx=15)
 saveButton.grid(row=3, column=1, padx=15)
 
 loadData()
