@@ -1,21 +1,21 @@
 #Intermittently checks the website of the National Exhibition Centre in Birmingham for events relating to my interests
 
-import requests
-#from apscheduler.schedulers.background import BlockingScheduler
+import os
+import time
+import json
 import smtplib
+import requests
+
 from dotenv import load_dotenv
 from win10toast import ToastNotifier
-#import sys
-import os
-import json
 from bs4 import BeautifulSoup
-import time
+#from apscheduler.schedulers.background import BlockingScheduler
 
 headers = {
     "User-Agent": "NECEventsFinder/1.0 (+https://www.joefisher.uk/)"
 }
 
-#Config file needed for projectFolder, and destination email address
+toaster = ToastNotifier()
 
 load_dotenv() #load environment variables from .env
 
@@ -24,7 +24,22 @@ smtpInfoP = os.getenv("smtpInfoP") #port
 smtpInfoE = os.getenv("smtpInfoE") #sender email
 smtpInfoK = os.getenv("smtpInfoK") #gmail key
 
-toaster = ToastNotifier()
+keywordsDesired = ["tech",
+                    "politics",
+                     "technology",
+                     "artificial intelligence",
+                     "computers",
+                     "computer",
+                     "political",
+                     "engineering",
+                     "engineers",
+                     "software",
+                     "future",
+                     "developers",
+                     "developer",
+                     ]
+
+
 
 if os.path.isfile("inputs.json"):
     print ("Configuration found")
@@ -32,9 +47,7 @@ if os.path.isfile("inputs.json"):
         try:
             data = json.load(f)
             emailAddress = data.get("email_address")
-            #project_Folder = data.get("project_folder")
             print (f"Recipient email address is {emailAddress}")
-            #print (f"The folder within which to store web pages is {project_Folder}")
 
         except Exception as e:
             print(f"{e}")
@@ -69,21 +82,6 @@ def necScrape():
     found_URLs = {} #Store all URLs with text matching one or more of the keywords
 
     url = "https://www.thenec.co.uk/whats-on/"
-
-    keywordsDesired = ["tech",
-                        "politics",
-                        "technology",
-                        "artificial intelligence",
-                        "computers",
-                        "computer",
-                        "political",
-                        "engineering",
-                        "engineers",
-                        "software",
-                        "future",
-                        "developers",
-                        "developer",
-                        ]
     
     print(f"Designated keywords: {keywordsDesired}")
     
@@ -97,7 +95,6 @@ def necScrape():
 
         try:
             JSON = json.loads(json_Data)
-            #print(JSON)
 
             for item in JSON:
                 if "Url" in item:
@@ -114,13 +111,13 @@ def necScrape():
                     response = requests.get(f"https://www.thenec.co.uk{url}")
                     if response.ok:
                         soup = BeautifulSoup(response.content, "html.parser")
-                        time.sleep(2) #Etiquette: spread out requests
+                        time.sleep(2) #Rate limiting, 2 seconds between requests
                         pageText = soup.get_text().lower()
                         locatedKeywords = [keyword for keyword in keywordsDesired if keyword.lower() in pageText]
                         if locatedKeywords:
                             print('\x1b[6;30;42m' + f"Keyword(s) found in {url}: {locatedKeywords}" + '\x1b[0m')
                             found_URLs[url] = locatedKeywords
-                            #found_URLs.append(f"https://www.thenec.co.uk{url}")
+                            
 
                         else:
                             print(f"No keyword(s) found in {url}")
