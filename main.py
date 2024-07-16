@@ -146,6 +146,3 @@ necScrape()
 #    scheduler = BlockingScheduler
 #    necSearch_1 = scheduler.add_job(necScrape)
 
-
-#emailClient(emailAddress, bodyOfText)
-
